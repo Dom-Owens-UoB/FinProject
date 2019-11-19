@@ -2,11 +2,10 @@ library(tidyverse)
 symbols <- read.csv("data/table-1.csv")
 symbols <- symbols$Ticker.symbol
 
-data <- read.csv("data/SP_500/AA.csv")
-
 collect_close <- function(period){
   i = 1
   dates <- seq.Date(as.Date(period[1]),as.Date(period[2]),"day")
+  dates <- sort(dates,decreasing = TRUE)
   combined_stock_data <- data.frame("date" = dates)
   for(symbol in symbols){
     file_destination <- paste("data/SP_500/",symbol,".csv",sep="")
