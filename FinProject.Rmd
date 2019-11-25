@@ -30,9 +30,32 @@ We make the following assumptions:
 
 - For inferential purposes, we make distributional assumptions on $\boldsymbol{f}$ or $\boldsymbol{x}$ (often multivariate normality)
 
+
+We will be working with **time series** data and models, meaning our observations $\mathbf{x}_t$ are indexed in time by $t \in \{ 0, 1, ... T \}$.
+We further assume that
+
+- The **Covariance** matrix $\Sigma$ is constant with respect to $t$
+
+- (further assumptions - second order stn.ry, differences etc.)
+
+Indeed, underlying the whole idea of forecasting financial markets is the **Big Assumption**, which is that economic activity in the near future will closely resemble economic activity in the past.
+
 ### Estimation
 
 As opposed to the similar-looking regression problem $ \boldsymbol{y} = X \boldsymbol{\beta} + \boldsymbol{\epsilon} $, in which the desgin matrix $X$ is known, we know neither $\boldsymbol{f}$ nor ${\Lambda}$; hence, any "best-fit" solutions will not be unique.
 
+For conducting estimation in practice, we often find $\hat{\Lambda}$ and $\hat{\Phi}$, then find $\boldsymbol{\hat{f}}$.
+In disciplines such as finance and economics, the factors can be pre-specified according to theoretical justifications (see the [Fama-French factor model]{https://www.investopedia.com/terms/f/famaandfrenchthreefactormodel.asp} ); we will use a mathematical approach instead.
 
+One way of finding estimates leverages Principal Components Analysis (PCA), called **Principal Factor Analysis (PFA)**. is what we will use in this project.
 
+We work with the covariance and sample covariances matrices $$ \Sigma = \Lambda \Lambda^T + \Psi \text{ and } S =  $$
+Suppose that we have the principal components decomposition 
+$$ \mathbf{x}_t = A^T \mathbf{z}_t  $$
+where $A \in \mathbb{R}^{p \times n}$ is a matrix consisting of eigenvectors $\boldsymbol{\alpha_i}$, each corresponding to an eigenvalue $l_i$ in decreasing order. $\mathbf{z} \in \mathbb{R}^p $ and $p$ is the number of different series being measured.  
+
+By partitioning the decomposition into the principal $m$ and minor $p-m$ components, we obtain a factor analysis and error accordingly:
+$$  \mathbf{x}_t = (A_m|A^*_{p-m} )^T  \left( \frac{\mathbf{z}_{m,t}} {\mathbf{z}^*_{p-m,t}} \right)$$
+$$= A_m^T \mathbf{z}_{m,t} + A^*_{p-m}^T \mathbf{z}^*_{p-m,t} = \Lambda \mathbf{f}_t + \boldsymbol{\epsilon}_t $$
+
+Substituting in the sample covariance gives us our estimates; for a model with $\Psi = \sigma^2 I$ this maximises the log-likelihood function (PRML p.548).
