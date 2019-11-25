@@ -1,0 +1,38 @@
+---
+title: "Finance Project: Forecasting the S&P 500"
+author: "Dom Owens"
+date: "18/11/2019"
+header-includes:
+  - \usepackage{bbm}
+output: html_document
+---
+
+
+
+## Factor Analysis
+
+Within this project, we will use **Factor Analysis** as a dimension reduction technique for our mutlivariate time series $\mathbf{x}_t$. The problem is treated as follows:
+
+We wish to reduce the dimension of an observable random vector $\mathbf{x} \in \mathbbm{R}^p$ to a smaller vector $\mathbf{x} \in \mathbbm{R}^m$ of latent variabes, where $m << p$.
+
+We do this by expressing each $x_i$ as a linear combination of the factors: 
+$$x_i = \lambda_{i1} f_1 + ... + \lambda_{im} f_m + \epsilon_i \hspace{30pt} \mathbf{x} = \Lambda \mathbf{f} + \boldsymbol{\epsilon}$$ 
+
+Here, $\Lambda$ are the **factor loadings**, and $\boldsymbol{\epsilon}$ are errors.
+
+We make the following assumptions:
+
+- $E(\boldsymbol{\epsilon}) = \boldsymbol{0}$, $E(\boldsymbol{f}) = \boldsymbol{0}$, $E(\boldsymbol{x}) = \boldsymbol{0}$ (WLOG)
+
+- $E(\boldsymbol{\epsilon \epsilon^T}) = \boldsymbol{\Psi}$ is a diagonal matrix
+
+- $E(\boldsymbol{f f^T}) = \boldsymbol{I}_m$, so that the factors are independent
+
+- For inferential purposes, we make distributional assumptions on $\boldsymbol{f}$ or $\boldsymbol{x}$ (often multivariate normality)
+
+### Estimation
+
+As opposed to the similar-looking regression problem $ \boldsymbol{y} = X \boldsymbol{\beta} + \boldsymbol{\epsilon} $, in which the desgin matrix $X$ is known, we know neither $\boldsymbol{f}$ nor ${\Lambda}$; hence, any "best-fit" solutions will not be unique.
+
+
+
