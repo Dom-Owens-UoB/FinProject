@@ -372,7 +372,7 @@ summary {
 <div id="factor-analysis" class="section level2">
 <h2>Factor Analysis</h2>
 <p>Within this project, we will use <strong>Factor Analysis</strong> as a dimension reduction technique for our mutlivariate time series <span class="math inline">\(\mathbf{x}_t\)</span>. The problem is treated as follows:</p>
-<p>We wish to reduce the dimension of an observable random vector <span class="math inline">\(\mathbf{x} \in \mathbbm{R}^p\)</span> to a smaller vector <span class="math inline">\(\mathbf{x} \in \mathbbm{R}^m\)</span> of latent variabes, where <span class="math inline">\(m &lt;&lt; p\)</span>.</p>
+<p>We wish to reduce the dimension of an observable random vector <span class="math inline">\(\mathbf{x} \in \mathbb{R}^p\)</span> to a smaller vector <span class="math inline">\(\mathbf{x} \in \mathbb{R}^m\)</span> of latent variabes, where <span class="math inline">\(m &lt;&lt; p\)</span>.</p>
 <p>We do this by expressing each <span class="math inline">\(x_i\)</span> as a linear combination of the factors: <span class="math display">\[x_i = \lambda_{i1} f_1 + ... + \lambda_{im} f_m + \epsilon_i \hspace{30pt} \mathbf{x} = \Lambda \mathbf{f} + \boldsymbol{\epsilon}\]</span></p>
 <p>Here, <span class="math inline">\(\Lambda\)</span> are the <strong>factor loadings</strong>, and <span class="math inline">\(\boldsymbol{\epsilon}\)</span> are errors.</p>
 <p>We make the following assumptions:</p>
@@ -390,12 +390,20 @@ summary {
 <p>Indeed, underlying the whole idea of forecasting financial markets is the <strong>Big Assumption</strong>, which is that economic activity in the near future will closely resemble economic activity in the past.</p>
 <div id="estimation" class="section level3">
 <h3>Estimation</h3>
-<p>As opposed to the similar-looking regression problem $  = X  +  $, in which the desgin matrix <span class="math inline">\(X\)</span> is known, we know neither <span class="math inline">\(\boldsymbol{f}\)</span> nor <span class="math inline">\({\Lambda}\)</span>; hence, any “best-fit” solutions will not be unique.</p>
+<p>As opposed to the similar-looking regression problem <span class="math display">\[\boldsymbol{y} = X \boldsymbol{\beta} + \boldsymbol{\epsilon} \]</span>, in which the desgin matrix <span class="math inline">\(X\)</span> is known, we know neither <span class="math inline">\(\boldsymbol{f}\)</span> nor <span class="math inline">\(\Lambda\)</span>; hence, any “best-fit” solutions will not be unique.</p>
 <p>For conducting estimation in practice, we often find <span class="math inline">\(\hat{\Lambda}\)</span> and <span class="math inline">\(\hat{\Phi}\)</span>, then find <span class="math inline">\(\boldsymbol{\hat{f}}\)</span>. In disciplines such as finance and economics, the factors can be pre-specified according to theoretical justifications (see the [Fama-French factor model]{<a href="https://www.investopedia.com/terms/f/famaandfrenchthreefactormodel.asp" class="uri">https://www.investopedia.com/terms/f/famaandfrenchthreefactormodel.asp</a>} ); we will use a mathematical approach instead.</p>
 <p>One way of finding estimates leverages Principal Components Analysis (PCA), called <strong>Principal Factor Analysis (PFA)</strong>. is what we will use in this project.</p>
-<p>We work with the covariance and sample covariances matrices <span class="math display">\[ \Sigma = \Lambda \Lambda^T + \Psi \text{ and } S =  \]</span> Suppose that we have the principal components decomposition <span class="math display">\[ \mathbf{x}_t = A^T \mathbf{z}_t  \]</span> where <span class="math inline">\(A \in \mathbb{R}^{p \times n}\)</span> is a matrix consisting of eigenvectors <span class="math inline">\(\boldsymbol{\alpha_i}\)</span>, each corresponding to an eigenvalue <span class="math inline">\(l_i\)</span> in decreasing order. $ ^p $ and <span class="math inline">\(p\)</span> is the number of different series being measured.</p>
-<p>By partitioning the decomposition into the principal <span class="math inline">\(m\)</span> and minor <span class="math inline">\(p-m\)</span> components, we obtain a factor analysis and error accordingly: <span class="math display">\[  \mathbf{x}_t = (A_m|A^*_{p-m} )^T  \left( \frac{\mathbf{z}_{m,t}} {\mathbf{z}^*_{p-m,t}} \right)\]</span> <span class="math display">\[= A_m^T \mathbf{z}_{m,t} + A^*_{p-m}^T \mathbf{z}^*_{p-m,t} = \Lambda \mathbf{f}_t + \boldsymbol{\epsilon}_t \]</span></p>
+<p>We work with the covariance and sample covariances matrices <span class="math display">\[ \Sigma = \Lambda \Lambda^T + \Psi \text{ and } 
+S = \frac{1}{n}XX^T\]</span> Suppose that we have the principal components decomposition <span class="math display">\[ \mathbf{x}_t = A^T \mathbf{z}_t  \]</span> where <span class="math inline">\(A \in \mathbb{R}^{p \times n}\)</span> is a matrix consisting of eigenvectors <span class="math inline">\(\boldsymbol{\alpha_i}\)</span>, each corresponding to an eigenvalue <span class="math inline">\(l_i\)</span> in decreasing order. $ ^p $ and <span class="math inline">\(p\)</span> is the number of different series being measured.</p>
+<p>By partitioning the decomposition into the principal <span class="math inline">\(m\)</span> and minor <span class="math inline">\(p-m\)</span> components, we obtain a factor analysis and error accordingly: <span class="math display">\[\mathbf{x}_t = (A_m|A^*_{p-m} )^T  \left( \frac{\mathbf{z}_{m,t}} {\mathbf{z}^*_{p-m,t}} \right) \]</span> <span class="math display">\[ = A_m^T \mathbf{z}_{m,t} + (A^*_{p-m})^T \mathbf{z}^*_{p-m,t} \]</span> <span class="math display">\[= \Lambda \mathbf{f}_t + \boldsymbol{\epsilon}_t \]</span></p>
 <p>Substituting in the sample covariance gives us our estimates; for a model with <span class="math inline">\(\Psi = \sigma^2 I\)</span> this maximises the log-likelihood function (PRML p.548).</p>
+</div>
+<div id="factor-analysis-and-probabilistic-graphical-models" class="section level3">
+<h3>Factor Analysis and Probabilistic Graphical Models</h3>
+</div>
+<div id="references" class="section level3">
+<h3>References</h3>
+<p>Pattern Recognition and Machine Learning, Christopher Bishop</p>
 </div>
 </div>
 
