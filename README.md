@@ -14,3 +14,17 @@ the covariance matrix for the rates of return on the assets in the portfolio. Th
 optimisation problem itself may be constrained by many factors, e.g. whether
 short selling is allowed. Transaction cost is another consideration that will
 impact on the frequency of adjustment to the portfolio.
+
+## Plan
+
+- Factor analysis notes
+
+  SM1 Content:
+- VAR: method explanation, application, results
+- Gaussian Process classification: method explanation, application, results
+- forecast, cost comparison
+
+  SC1 Content:
+- Package: data, functions, testing
+- Visualisation (time series, forecasts...)
+- Debugging
