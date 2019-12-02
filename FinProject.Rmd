@@ -3,8 +3,8 @@ title: 'Finance Project: Forecasting the S&P 500'
 author: "Dom Owens"
 date: "18/11/2019"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 
