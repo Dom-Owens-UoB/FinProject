@@ -3,8 +3,8 @@ title: 'Finance Project: Forecasting the S&P 500'
 author: "Dom Owens"
 date: "18/11/2019"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 
@@ -71,7 +71,21 @@ We can select the number of factors to use, $m$, using the knowledge that each f
 
 We might plot the Scree plot (with `screeplot`) and identify a drop-off in the variance explained, or pick an amount of factors sufficient to explain, say, 70% of the variance. Alternatively, information criteria can give a systematic means of selecting $m$, though these are slightly more complicated.
 
+
+## Forecasting
+
+We opt for the **direct forecast** procedure, where data at $t+h$ is projected onto factors $\mathbf{f}_t$.
+
+Forecasting can be conducted for a single series $y_t$, or for the whole vector of series $\mathbf{x}_t$.
+
+
+
+
+
 ### References
 Pattern Recognition and Machine Learning, Christopher Bishop
 
-[Dyanmic Factor Models]{http://www.barigozzi.eu/MB_DF_lecture_notes.pdf} Matteo Barigozzi
+[Dynamic Factor Models]{http://www.barigozzi.eu/MB_DF_lecture_notes.pdf} Matteo Barigozzi
+
+[Forecasting Using Principal Components
+From a Large Number of Predictors ]{https://www.princeton.edu/~mwatson/papers/Stock_Watson_JASA_2002.pdf} Stock, Watson

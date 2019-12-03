@@ -1,0 +1,45 @@
+---
+title: "FinProject Data Analysis"
+author: "Dom Owens"
+date: "03/12/2019"
+output: html_document
+---
+
+```{r}
+
+close_data <- read.csv("combined_close_data.csv") #import data
+```
+
+```{r}
+close_data_2018 <- as.ts(close_data[1:251,3:421]) #select past year
+plot(close_data_2018[, 3:10]) #plot first 8 series 
+```
+These do not appear to be stationary, so we take differences.
+
+```{r}
+close_2018_diff <- diff(close_data_2018) #difference
+plot(close_2018_diff[, 3:10]) #plot first 8 differenced series 
+close_2018_diff <- close_2018_diff[,-6] #drop ADT
+```
+
+
+## Extracting Factors with Principle Components
+
+```{r}
+Covar <- cov(close_2018_diff) #find covariance
+PCA <- princomp(Covar) #take PCA of covariance
+screeplot(PCA) 
+head(PCA$sdev, 30) #view standard deviations of first 30 components
+```
+
+If we select the components with standard deviation greater than 1, 
+
+## Forecasting Multiple Series
+
+
+```{r}
+#install.packages("tsfa")
+library(tsfa)
+
+```
+

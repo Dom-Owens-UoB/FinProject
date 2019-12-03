@@ -384,7 +384,7 @@ summary {
 </ul>
 <p>We will be working with <strong>time series</strong> data and models, meaning our observations <span class="math inline">\(\mathbf{x}_t\)</span> are indexed in time by <span class="math inline">\(t \in \{ 0, 1, ... T \}\)</span>. We further assume that</p>
 <ul>
-<li><p>The <strong>Covariance</strong> matrix <span class="math inline">\(\Sigma\)</span> is constant with respect to <span class="math inline">\(t\)</span></p></li>
+<li><p>The <strong>Covariance</strong> matrix <span class="math inline">\(\Sigma\)</span> is constant with respect to <span class="math inline">\(t\)</span> (this is the <strong>static</strong> model, as opposed to the more complicated <strong>dynamic</strong> model)</p></li>
 <li><p>(further assumptions - second order stn.ry, differences etc.)</p></li>
 </ul>
 <p>Indeed, underlying the whole idea of forecasting financial markets is the <strong>Big Assumption</strong>, which is that economic activity in the near future will closely resemble economic activity in the past.</p>
@@ -394,16 +394,20 @@ summary {
 <p>For conducting estimation in practice, we often find <span class="math inline">\(\hat{\Lambda}\)</span> and <span class="math inline">\(\hat{\Phi}\)</span>, then find <span class="math inline">\(\boldsymbol{\hat{f}}\)</span>. In disciplines such as finance and economics, the factors can be pre-specified according to theoretical justifications (see the [Fama-French factor model]{<a href="https://www.investopedia.com/terms/f/famaandfrenchthreefactormodel.asp" class="uri">https://www.investopedia.com/terms/f/famaandfrenchthreefactormodel.asp</a>} ); we will use a mathematical approach instead.</p>
 <p>One way of finding estimates leverages Principal Components Analysis (PCA), called <strong>Principal Factor Analysis (PFA)</strong>. is what we will use in this project.</p>
 <p>We work with the covariance and sample covariances matrices <span class="math display">\[ \Sigma = \Lambda \Lambda^T + \Psi \text{ and } 
-S = \frac{1}{n}XX^T\]</span> Suppose that we have the principal components decomposition <span class="math display">\[ \mathbf{x}_t = A^T \mathbf{z}_t  \]</span> where <span class="math inline">\(A \in \mathbb{R}^{p \times n}\)</span> is a matrix consisting of eigenvectors <span class="math inline">\(\boldsymbol{\alpha_i}\)</span>, each corresponding to an eigenvalue <span class="math inline">\(l_i\)</span> in decreasing order. $ ^p $ and <span class="math inline">\(p\)</span> is the number of different series being measured.</p>
+S = \frac{1}{T}XX^T\]</span> Suppose that we have the principal components decomposition <span class="math display">\[ \mathbf{x}_t = A^T \mathbf{z}_t  \]</span> where <span class="math inline">\(A \in \mathbb{R}^{p \times n}\)</span> is a matrix consisting of eigenvectors <span class="math inline">\(\boldsymbol{\alpha_i}\)</span>, each corresponding to an eigenvalue <span class="math inline">\(l_i\)</span> in decreasing order. $ ^p $ and <span class="math inline">\(p\)</span> is the number of different series being measured.</p>
 <p>By partitioning the decomposition into the principal <span class="math inline">\(m\)</span> and minor <span class="math inline">\(p-m\)</span> components, we obtain a factor analysis and error accordingly: <span class="math display">\[\mathbf{x}_t = (A_m|A^*_{p-m} )^T  \left( \frac{\mathbf{z}_{m,t}} {\mathbf{z}^*_{p-m,t}} \right) \]</span> <span class="math display">\[ = A_m^T \mathbf{z}_{m,t} + (A^*_{p-m})^T \mathbf{z}^*_{p-m,t} \]</span> <span class="math display">\[= \Lambda \mathbf{f}_t + \boldsymbol{\epsilon}_t \]</span></p>
-<p>Substituting in the sample covariance gives us our estimates; for a model with <span class="math inline">\(\Psi = \sigma^2 I\)</span> this maximises the log-likelihood function (PRML p.548).</p>
+<p>Substituting in the sample covariance and normalising gives us our estimates (for a model with <span class="math inline">\(\Psi = \sigma^2 I\)</span> this maximises the log-likelihood function (PRML p.548) <em>(are we assuming this?)</em>)</p>
+<p><span class="math display">\[  \hat{\Lambda} = \sqrt{p}A^T_m , \hat{\Phi} ={p}A^{*T}_{p-m}A^{*}_{p-m} \]</span></p>
 </div>
-<div id="factor-analysis-and-probabilistic-graphical-models" class="section level3">
-<h3>Factor Analysis and Probabilistic Graphical Models</h3>
+<div id="factor-analysis-selecting-the-number-of-factors-m" class="section level3">
+<h3>Factor Analysis: Selecting the number of factors <span class="math inline">\(m\)</span></h3>
+<p>We can select the number of factors to use, <span class="math inline">\(m\)</span>, using the knowledge that each factor explains a decreasing amount of the total variance, given our static model estimated with PCA.</p>
+<p>We might plot the Scree plot (with <code>screeplot</code>) and identify a drop-off in the variance explained, or pick an amount of factors sufficient to explain, say, 70% of the variance. Alternatively, information criteria can give a systematic means of selecting <span class="math inline">\(m\)</span>, though these are slightly more complicated.</p>
 </div>
 <div id="references" class="section level3">
 <h3>References</h3>
 <p>Pattern Recognition and Machine Learning, Christopher Bishop</p>
+<p>[Dyanmic Factor Models]{<a href="http://www.barigozzi.eu/MB_DF_lecture_notes.pdf" class="uri">http://www.barigozzi.eu/MB_DF_lecture_notes.pdf</a>} Matteo Barigozzi</p>
 </div>
 </div>
 
