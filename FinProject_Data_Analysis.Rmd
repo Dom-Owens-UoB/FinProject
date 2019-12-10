@@ -6,31 +6,20 @@ output: html_document
 ---
 
 ```{r}
-
-close_data <- read.csv("combined_close_data.csv") #import data
-#log_close_data <- log(close_data[,3:421])
-#diff_log_close <- diff(log_close_data)
+oil_close_data <- read.csv("oil_close_2018.csv") #import data
 ```
 
-```{r}
-close_data_2018 <- as.ts(close_data[1:251,3:421]) #select past year
-```
+
 For financial series, we consider the logarithm of the value, since movements tend to occur multiplicitavely. These do not appear to be stationary, so we take differences.
 ```{r}
+close_data_2018 <- subset(oil_close_data, select = -c(X.1, DATE, DCOILWTICO, ADT)) #drop date and oil, ADT
 log_close <- log(close_data_2018) #take log
-diff_log <- diff(log_close) #diff series
+diff_log <- diff(ts(log_close)) #diff series
 plot(diff_log[, 3:10]) #plot first 8 series 
 ```
 
 
-```{r}
-#close_2018_diff <- diff(diff_log) #difference
-#plot(diff_log[, 3:10]) #plot first 8 differenced series 
-diff_log <- diff_log[,-6] #drop ADT
-```
-
-
-## Extracting Factors with Principle Components
+## Extracting Factors with Principal Components
 
 ```{r}
 Covar <- cov(diff_log) #find covariance
@@ -41,26 +30,20 @@ head(PCA$sdev, 30) #view standard deviations of first 30 components
 We arbitrarily select all components with variance greater than order 1e-04, which are the first 10.
 
 ```{r}
-#Covar <- cov(close_data_2018[,-6]) #find covariance
-#PCA <- princomp(Covar) #take PCA of covariance
-#screeplot(PCA) 
-#head(PCA$sdev, 30) #view standard deviations of first 30 components
 Y <- as.matrix(diff_log)
 loadings <- PCA$loadings[,1:10]
 loadings <- as.matrix(loadings)
 factor_series <- (Y%*%loadings) %*% solve(t(loadings)%*%loadings)
 plot(as.ts(factor_series[,1:8]))
-#diff_factor_series <- diff(as.ts(factor_series))
-#plot(diff_factor_series[,1:8])
 ```
 
 
 ## Forecasting oil prices using factors
 
+Suppose we wish to forecast the spot price of a different asset. We might think there is some relationship between the price of crude oil (WTI)[https://fred.stlouisfed.org/series/DCOILWTICO] and the S&P 500; we construct a regression on our factor representation to describe this.
+
 ```{r}
-oil_reverse <- read.csv("DCOILWTICO.csv") #read in oil data
-oil <- rev(oil_reverse) #reverse input
-oil_price <- ts(oil$DCOILWTICO) #select prices
+oil_price <- ts(oil_close_data$DCOILWTICO) #select prices
 plot(oil_price)
 ```
 
@@ -72,19 +55,22 @@ oil_price_d <- diff(oil_price_l) #difference log series
 plot(oil_price_d)
 ```
 
-We model the oil price as a function of our factors
+We model the oil price as a function of our factors.
+
 ```{r}
-model_data <- data.frame(oil = oil_price_d[1:250], factor_series) #group series as dataframe
-train_data <- model_data[1:200,]
-test_data <- model_data[201:250,]
+model_data <- data.frame(oil = oil_price_d, factor_series) #group series as dataframe
+train_data <- model_data[1:200,] #select first 200 as training
+test_data <- model_data[201:250,] #select last 250 as testing
 
-oil_model <- lm(oil ~ ., data = train_data, na.action = NULL)
-#lm(oil_price[125:250] ~ factor_series[125:250,])
-plot(ts(residuals(oil_model)))
+oil_model <- lm(oil ~ ., data = train_data, na.action = NULL) #fit linear model
+
+mean(residuals(oil_model)^2) #Mean Squared Error
+plot(ts(residuals(oil_model))) #residual plot
+
 preds <- predict(oil_model,  newdata = test_data)
-plot(ts(preds))
-
-plot(test_data$oil, preds)
+ts.plot(oil_price_d[201:250], col = "red") #plot predicted series
+lines(ts(preds)) #overlay observed series
+plot(test_data$oil, preds) #scatterplot of prediction errors
 ```
 
 
