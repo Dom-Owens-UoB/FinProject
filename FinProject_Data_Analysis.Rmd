@@ -1,5 +1,5 @@
 ---
-title: "FinProject Data Analysis"
+title: "Financial Data Project: Forecasting Oil Movements with Factors"
 author: "Dom Owens"
 date: "03/12/2019"
 output: html_document
@@ -38,7 +38,7 @@ plot(as.ts(factor_series[,1:8]))
 ```
 
 
-## Forecasting oil prices using factors
+# Forecasting oil prices using factors
 
 Suppose we wish to forecast the spot price of a different asset. We might think there is some relationship between the price of crude oil (WTI)[https://fred.stlouisfed.org/series/DCOILWTICO] and the S&P 500; we construct a regression on our factor representation to describe this.
 
@@ -55,7 +55,8 @@ oil_price_d <- diff(oil_price_l) #difference log series
 plot(oil_price_d)
 ```
 
-We model the oil price as a function of our factors.
+We model the differenced log-oil price $y_t$ as a linear function of our factors $\mathbf{f}_t$:
+$$ y_t = \boldsymbol{\beta}^T \mathbf{f}_t + \epsilon_t  $$
 
 ```{r}
 model_data <- data.frame(oil = oil_price_d, factor_series) #group series as dataframe
@@ -72,18 +73,94 @@ ts.plot(oil_price_d[201:250], col = "red") #plot predicted series
 lines(ts(preds)) #overlay observed series
 plot(test_data$oil, preds) #scatterplot of prediction errors
 ```
+This performs moderately well in predictive terms, though we can see the predicted change in the logarithm is almost constant. Moreover, predicitve power is lost for longer time differences, particular at the later time points where the volatility seems to have changed.
 
+We inspect the autocorrelation plot.
 
+```{r}
+acf(oil_price_d) #plot acf
+```
 
-## Forecasting
+There appears to be a significant autocorrelation with lag 1, so a moving average component may perform better.
+We model
+$$ y_t = \boldsymbol{\beta}^T \mathbf{f}_t + \alpha y_{t-1} + \epsilon_t  $$
+```{r}
+oil_price_d_lag <- c(oil_price_d[-1],0) #specify 1-lagged series
+model_data <- data.frame(oil = oil_price_d, factor_series, lag = oil_price_d_lag) #group series as dataframe
+train_data <- model_data[1:200,] #select first 200 as training
+test_data <- model_data[201:250,] #select last 250 as testing
 
+oil_MA <- lm(oil ~ ., data = train_data, na.action = NULL) #fit linear model
 
+mean(residuals(oil_MA)^2) #Mean Squared Error
+plot(ts(residuals(oil_MA))) #residual plot
+
+preds <- predict(oil_MA,  newdata = test_data)
+ts.plot(oil_price_d[201:250], col = "red") #plot observed series in red
+lines(ts(preds)) #overlay predicted series
+plot(test_data$oil, preds) #scatterplot of prediction errors
+```
+This does not seem to give us much improvement.
+
+# Classifying Movements with Factors
+We might find more luck in classifying whether the log-oil price increases or decreases.
+We encode the changes as $y \in \{ -1, +1\}$ depending on their sign; here, we implicitly ignore our belief that the data are not IID.
+
+## Support Vector Machines
 
 
 ```{r}
-#install.packages("tsfa")
-library(tsfa)
+change <- as.numeric(sign(oil_price_d)) #encode change as +1 or -1
+lag_change <- as.numeric(sign(oil_price_d_lag)) #encode lag series
+model_data <- data.frame(change = change, factor_series, lag_change = lag_change) #group series as dataframe
+train_data <- model_data[1:200,] #select first 200 as training
+test_data <- model_data[201:250,] #select last 250 as testing
+```
+
+We use the `SVM` function from our package.
+```{r, echo = FALSE}
+#Define support vector machine function for multi-dimensional X
+
+
+SVM <- function(X, y, max_it = 1e4, eta_0 = 10, alpha = 0.9, c = 0.9){
+  
+  n <- dim(X)[1] #observations
+  d <- dim(X)[2] #dimensions
+  w <- runif(d) #set initial weight vector randomly
+  
+    for (iter in 1:max_it){
+      eta <- eta_0/(iter^alpha) #decrease step size
+      samp <- sample(1:n, n) # index sample
+      X1 <- X[samp,] #shuffle
+      y1 <- y[samp] #shuffle
+      
+      for (i in 1:n) {
+        x1 <- as.numeric(X1[i,])
+        if (y1[i] * w %*% x1 <= 1) {
+          w <- as.numeric(w + eta * (y1[i] * t(x1) - c * w))  }
+      }
+    }
+  
+  w
+}
 
 
 ```
+
+
+```{r, cache=TRUE}
+w <- SVM(X = train_data[,-1], y = train_data$change, max_it = 1e3, eta_0 = 1, alpha = 0.9, c = 0.9) #fit SVM
+w #print coefficients
+SVM_preds <-  as.matrix(test_data[,-1]) %*% w
+head(sign(SVM_preds))
+
+plot(change[201:250] - sign(SVM_preds)) #plot class residuals over time
+
+sum(change[201:250] != sign(SVM_preds))/length(SVM_preds) #calculate percentage of misclassified points
+```
+
+This method also performs poorly, and is likely no better than classifying with a simple $Y \sim Bernoulli(0.5)$ assignment.
+
+ 
+
 
