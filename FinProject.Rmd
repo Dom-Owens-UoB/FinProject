@@ -1,5 +1,5 @@
 ---
-title: 'Finance Project: Forecasting the S&P 500'
+title: 'Financial Data Project: Notes on Factor Analysis'
 author: "Dom Owens"
 date: "18/11/2019"
 output:
@@ -9,7 +9,7 @@ output:
 
 
 
-## Factor Analysis
+# Factor Analysis
 
 Within this project, we will use **Factor Analysis** as a dimension reduction technique for our mutlivariate time series $\mathbf{x}_t$. The problem is treated as follows:
 
