@@ -1,5 +1,6 @@
-# FinProject
-## COMPASS SM1/SC1 financial data project
+# FinProject: COMPASS SM1/SC1 financial data project
+
+## Project Brief 
 
 https://finance.yahoo.com/
 Yahoo Finance is one possible source of historical financial time series data.
@@ -15,6 +16,8 @@ optimisation problem itself may be constrained by many factors, e.g. whether
 short selling is allowed. Transaction cost is another consideration that will
 impact on the frequency of adjustment to the portfolio.
 
+
+
 ## Plan
 
 - Factor analysis notes
@@ -28,3 +31,6 @@ impact on the frequency of adjustment to the portfolio.
 - Package: data, functions, testing
 - Visualisation (time series, forecasts...)
 - Debugging
+
+## Layout
+- **Package**: access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`
