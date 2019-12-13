@@ -33,4 +33,12 @@ impact on the frequency of adjustment to the portfolio.
 - Debugging
 
 ## Layout
-- **Package**: access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`
+- [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/pkg): access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`
+
+-[**Notes on Factor Analysis**]()
+
+-[**Modelling Oil Prices**]()
+
+-[**Portfolio Selection**]()
+
+-[**Gaussian Process Regression**]()
