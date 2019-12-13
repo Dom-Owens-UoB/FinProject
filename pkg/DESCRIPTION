@@ -1,0 +1,11 @@
+Package: pkg
+Type: Package
+Title: Functions and data for FinProject 
+Version: 0.1.0
+Author: Doug Corbin, Michael Whitehouse, Dom Owens
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Contains functions used for modelling and portfolio selection, and data on the S&P 500 and WTI oil prices.
+    
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
