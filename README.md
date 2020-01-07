@@ -37,9 +37,9 @@ impact on the frequency of adjustment to the portfolio.
 ## Layout
 - [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/pkg): access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`
 
-- [**Notes on Factor Analysis**]()
+- [**Notes on Factor Analysis**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject.pdf)
 
-- [**Modelling Oil Prices**]()
+- [**Modelling Oil Prices**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject_Data_Analysis.pdf)
 
 - [**Portfolio Selection**]()
 
