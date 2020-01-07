@@ -1,0 +1,190 @@
+---
+title: "Financial Data Project: Forecasting Oil Movements with Factors"
+author: "Dom Owens"
+date: "03/12/2019"
+output: html_document
+---
+
+```{r}
+oil_close_data <- read.csv("oil_close_2018.csv") #import data
+```
+
+
+For financial series, we consider the logarithm of the value, since movements tend to occur multiplicitavely. These do not appear to be stationary, so we take differences.
+```{r}
+close_data_2018 <- subset(oil_close_data, select = -c(X.1, DATE, DCOILWTICO, ADT)) #drop date and oil, ADT
+log_close <- log(close_data_2018) #take log
+diff_log <- diff(ts(log_close)) #diff series
+plot(diff_log[, 3:10]) #plot first 8 series 
+```
+
+
+## Extracting Factors with Principal Components
+
+```{r}
+#Covar <- cov(diff_log) #find covariance
+#PCA <- princomp(Covar) #take PCA of covariance
+PCA <- prcomp(diff_log)
+screeplot(PCA) 
+head(PCA$sdev, 30) #view standard deviations of first 30 components
+```
+We arbitrarily select the first 10 components.
+
+```{r}
+Y <- matrix(diff_log, nrow = dim(diff_log)[1], ncol = dim(diff_log)[2] )
+loadings <- PCA$rotation[,1:10]
+loadings <- as.matrix(loadings)
+factor_series <- (Y%*%loadings) %*% solve(t(loadings)%*%loadings)
+
+ts_factor_series <- ts(factor_series) #isolate as time series
+plot(ts_factor_series) #plot factors over time
+acf(ts_factor_series[,10])
+```
+
+
+# Forecasting oil prices using factors
+
+Suppose we wish to forecast the spot price of a different asset. We might think there is some relationship between the price of crude oil (WTI)[https://fred.stlouisfed.org/series/DCOILWTICO] and the S&P 500; we construct a regression on our factor representation to describe this.
+
+```{r}
+oil_price <- ts(oil_close_data$DCOILWTICO) #select prices
+plot(oil_price)
+```
+
+Again, this is not stationary and is financial, so we take the log and difference.
+
+```{r}
+oil_price_l <- log(oil_price) #log series
+oil_price_d <- diff(oil_price_l) #difference log series
+plot(oil_price_d)
+```
+
+We model the differenced log-oil price $y_t$ as a linear function of our factors $\mathbf{f}_t$:
+$$ y_t = \boldsymbol{\beta}^T \mathbf{f}_t + \epsilon_t  $$
+
+```{r}
+model_data <- data.frame(oil = oil_price_d, factor_series )#group series as dataframe
+train_data <- model_data[1:200,] #select first 200 as training
+test_data <- model_data[201:250,] #select last 250 as testing
+
+oil_model <- lm(oil ~ ., data = train_data, na.action = NULL) #fit linear model
+
+mean(residuals(oil_model)^2) #Mean Squared Error
+plot(ts(residuals(oil_model))) #residual plot
+
+preds <- predict(oil_model,  newdata = test_data)
+ts.plot(oil_price_d[201:250], col = "red") #plot predicted series
+lines(ts(preds)) #overlay observed series
+legend(1, 2,  legend=c("Predicted", "Actual"),
+       col=c("black", "red"), lty=1:2, cex=0.8) #add legend
+plot(test_data$oil, preds) #scatterplot of prediction errors
+```
+This performs moderately well in predictive terms, and we can expect prediction inaccuracy of `0.11`. Predicitve power is lost for longer time horizons, though we can see the model at the later time points picks up on the changed volatility.
+
+We inspect the autocorrelation plot.
+
+```{r}
+acf(oil_price_d) #plot acf
+```
+
+There appears to be a significant autocorrelation with lag 1, so incorporating a temporal dependence component may make the model perform better.
+We first model a 1-step autoregressive component
+$$ y_t = \boldsymbol{\beta}^T \mathbf{f}_t + \alpha y_{t-1} + \epsilon_t  $$
+```{r}
+oil_price_d_lag <- c(oil_price_d[-1],0) #specify 1-lagged series
+model_data <- data.frame(oil = oil_price_d, factor_series, lag = oil_price_d_lag) #group series as dataframe
+train_data <- model_data[1:200,] #select first 200 as training
+test_data <- model_data[201:250,] #select last 250 as testing
+
+oil_MA <- lm(oil ~ ., data = train_data, na.action = NULL) #fit linear model
+
+mean(residuals(oil_MA)^2) #Mean Squared Error
+plot(ts(residuals(oil_MA))) #residual plot
+
+preds <- predict(oil_MA,  newdata = test_data)
+ts.plot(oil_price_d[201:250], col = "red") #plot observed series in red
+lines(ts(preds)) #overlay predicted series
+plot(test_data$oil, preds) #scatterplot of prediction errors
+```
+This does not seem to give us much improvement - here our expected error is similar.
+
+
+
+
+
+# Classifying Movements with Factors
+We might find more luck in classifying whether the log-oil price increases $(+1)$ or decreases  $(-1)$.
+We encode the changes as $y \in \{ -1, +1\}$ depending on their sign, and use the same covariates as in the last problem, incorporating a 1-step lag term. 
+Here, we implicitly ignore our belief that the data are not IID - this is a strong assumption to place on the data, and may affect both the validity and the performance of the model.
+
+## Support Vector Machines
+
+
+```{r}
+change <- as.numeric(sign(oil_price_d)) #encode change as +1 or -1
+lag_change <- as.numeric(sign(oil_price_d_lag)) #encode lag series
+model_data <- data.frame(change = change, factor_series, lag_change = lag_change) #group series as dataframe
+train_data <- model_data[1:200,] #select first 200 as training
+test_data <- model_data[201:250,] #select last 250 as testing
+```
+
+We use the `SVM` function from our package.
+```{r, echo = FALSE}
+#Define support vector machine function for multi-dimensional X
+
+
+SVM <- function(X, y, max_it = 1e4, eta_0 = 10, alpha = 0.9, c = 0.9){
+  
+  n <- dim(X)[1] #observations
+  d <- dim(X)[2] #dimensions
+  w <- runif(d) #set initial weight vector randomly
+  
+    for (iter in 1:max_it){
+      eta <- eta_0/(iter^alpha) #decrease step size
+      samp <- sample(1:n, n) # index sample
+      X1 <- X[samp,] #shuffle
+      y1 <- y[samp] #shuffle
+      
+      for (i in 1:n) {
+        x1 <- as.numeric(X1[i,])
+        if (y1[i] * w %*% x1 <= 1) {
+          w <- as.numeric(w + eta * (y1[i] * t(x1) - c * w))  }
+      }
+    }
+  
+  w
+}
+
+
+```
+
+
+We aim to find a classification function $f(\boldsymbol{x,\beta},\alpha)$ by minimising 
+$$ || (\boldsymbol{\beta}^T, \alpha) ||^2 + \sum_t e_t$$
+such that $$ \forall t, y_t((\boldsymbol{\beta}^T, \alpha)(\mathbf{f}_t, y_{t-1})^T  ) + e_t \geq 1, e_t \geq 0  $$
+
+where $e_t$ is the distance of the point $(\mathbf{f}_t, y_{t-1})$ into the margin.
+
+
+```{r, cache=TRUE}
+w <- SVM(X = train_data[,-1], y = train_data$change, max_it = 1e3, eta_0 = 1, alpha = 0.9, c = 0.9) #fit SVM
+w #print coefficients
+SVM_preds <-  as.matrix(test_data[,-1]) %*% w
+head(sign(SVM_preds))
+
+plot(change[201:250] - sign(SVM_preds)) #plot class residuals over time
+
+sum(change[201:250] != sign(SVM_preds))/length(SVM_preds) #calculate percentage of misclassified points
+```
+
+This method does not perform particularly well, and is likely no better than classifying with a simple $Y \sim Bernoulli(0.5)$ assignment.
+
+ 
+## Bibliography
+
+Manel Youssef & Khaled Mokni, 2019. "Do Crude Oil Prices Drive the Relationship between Stock Markets of Oil-Importing and Oil-Exporting Countries?," Economies, MDPI, Open Access Journal, vol. 7(3), pages 1-22, July.
+
+Pattern Recognition and Machine Learning, Christopher Bishop
+
+Principal Components Analysis, Ian T. Jolliffe
+
