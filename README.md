@@ -20,6 +20,18 @@ impact on the frequency of adjustment to the portfolio.
 
 
 
+## Layout
+- [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/pkg): access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`
+
+- [**Notes on Factor Analysis**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject.pdf)
+
+- [**Modelling Oil Prices**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject_Data_Analysis.pdf)
+
+- [**Portfolio Selection**]()
+
+- [**Gaussian Process Regression**]()
+
+
 ## Plan
 
 - Factor analysis notes
@@ -33,14 +45,3 @@ impact on the frequency of adjustment to the portfolio.
 - Package: data, functions, testing
 - Visualisation (time series, forecasts...)
 - Debugging
-
-## Layout
-- [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/pkg): access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`
-
-- [**Notes on Factor Analysis**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject.pdf)
-
-- [**Modelling Oil Prices**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject_Data_Analysis.pdf)
-
-- [**Portfolio Selection**]()
-
-- [**Gaussian Process Regression**]()
