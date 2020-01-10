@@ -21,7 +21,7 @@ impact on the frequency of adjustment to the portfolio.
 
 
 ## Layout
-- [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/pkg): access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`
+- [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/pkg): access with `install_github("Dom-Owens-UoB/FinProject", subdir="pkg")`. Features [Principal Components Analysis in S4](https://github.com/Dom-Owens-UoB/FinProject/blob/master/pkg/R/myPCA.R); [Support Vector Machine for Classification](https://github.com/Dom-Owens-UoB/FinProject/blob/master/pkg/R/SupportVectorMachine.R);
 
 - [**Notes on Factor Analysis**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject.pdf)
 
