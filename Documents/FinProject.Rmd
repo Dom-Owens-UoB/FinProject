@@ -3,22 +3,23 @@ title: 'Financial Data Project: Notes on Factor Analysis'
 author: "Dom Owens"
 date: "18/11/2019"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 
 
 # Factor Analysis
 
-Within this project, we will use **Factor Analysis** as a dimension reduction technique for our mutlivariate time series $\mathbf{x}_t$. The problem is treated as follows:
+Within this project, we will use **Factor Analysis** as a dimension reduction technique for our multivariate time series $$ \mathbf{x}_t $$
+The problem is treated as follows:
 
-We wish to reduce the dimension of an observable random vector $\mathbf{x} \in \mathbb{R}^p$ to a smaller vector $\mathbf{x} \in \mathbb{R}^m$ of latent variabes, where $m << p$.
+We wish to reduce the dimension of an observable random vector $$ \mathbf{x} \in \mathbb{R}^p $$ to a smaller vector $$ \mathbf{x} \in \mathbb{R}^m $$ of latent variabes, where $m << p$.
 
-We do this by expressing each $x_i$ as a linear combination of the factors: 
-$$x_i = \lambda_{i1} f_1 + ... + \lambda_{im} f_m + \epsilon_i \hspace{30pt} \mathbf{x} = \Lambda \mathbf{f} + \boldsymbol{\epsilon}$$ 
+We do this by expressing each entry $x_i$ as a linear combination of the factors: 
+$$ x_i = \lambda_{i1} f_1 + ... + \lambda_{im} f_m + \epsilon_i \hspace{30pt} \mathbf{x} = \Lambda \mathbf{f} + \boldsymbol{\epsilon} $$ 
 
-Here, $\Lambda$ are the **factor loadings**, and $\boldsymbol{\epsilon}$ are errors.
+Here, $\Lambda$ are the **factor loadings**, and $$ \boldsymbol{\epsilon} $$ are errors.
 
 We make the following assumptions:
 
@@ -31,36 +32,40 @@ We make the following assumptions:
 - For inferential purposes, we make distributional assumptions on $\boldsymbol{f}$ or $\boldsymbol{x}$ (often multivariate normality)
 
 
-We will be working with **time series** data and models, meaning our observations $\mathbf{x}_t$ are indexed in time by $t \in \{ 0, 1, ... T \}$.
+We will be working with **time series** data and models, meaning our observations 
+$$ \boldsymbol{x}_t $$
+are indexed in time by $t \in \{ 0, 1, ... T \}$.
 We further assume that
 
 - The **Covariance** matrix $\Sigma$ is constant with respect to $t$ (this is the **static** model, as opposed to the more complicated **dynamic** model)
 
-- (further assumptions - second order stn.ry, differences etc.)
+- The differenced logarithm of the series is second-order stationary
 
-Indeed, underlying the whole idea of forecasting financial markets is the **Big Assumption**, which is that economic activity in the near future will closely resemble economic activity in the past.
+Indeed, underlying the whole idea of forecasting financial markets is the *Big Assumption*, which is that economic activity in the near future will closely resemble economic activity in the past.
 
 ### Estimation
 
-As opposed to the similar-looking regression problem $$\boldsymbol{y} = X \boldsymbol{\beta} + \boldsymbol{\epsilon} $$, in which the desgin matrix $X$ is known, we know neither $\boldsymbol{f}$ nor $\Lambda$; hence, any "best-fit" solutions will not be unique.
+As opposed to the similar-looking regression problem $$\boldsymbol{y} = X \boldsymbol{\beta} + \boldsymbol{\epsilon} $$ in which the desgin matrix $X$ is known, we know neither $\boldsymbol{f}$ nor $\Lambda$; hence, any "best-fit" solutions will not be unique.
 
 For conducting estimation in practice, we often find $\hat{\Lambda}$ and $\hat{\Phi}$, then find $\boldsymbol{\hat{f}}$.
-In disciplines such as finance and economics, the factors can be pre-specified according to theoretical justifications (see the [Fama-French factor model]{https://www.investopedia.com/terms/f/famaandfrenchthreefactormodel.asp} ); we will use a mathematical approach instead.
+In disciplines such as finance and economics, the factors can be pre-specified according to theoretical justifications (see the [Fama-French factor model](https://www.investopedia.com/terms/f/famaandfrenchthreefactormodel.asp); we will use a mathematical approach instead.
 
-One way of finding estimates leverages Principal Components Analysis (PCA), called **Principal Factor Analysis (PFA)**. is what we will use in this project.
+One way of finding estimates is through Principal Components Analysis (PCA), called **Principal Factor Analysis (PFA)**. is what we will use in this project.
 
 We work with the covariance and sample covariances matrices $$ \Sigma = \Lambda \Lambda^T + \Psi \text{ and } 
 S = \frac{1}{T}XX^T$$
 Suppose that we have the principal components decomposition 
-$$ \mathbf{x}_t = A^T \mathbf{z}_t  $$
-where $A \in \mathbb{R}^{p \times n}$ is a matrix consisting of eigenvectors $\boldsymbol{\alpha_i}$, each corresponding to an eigenvalue $l_i$ in decreasing order. $\mathbf{z} \in \mathbb{R}^p $ and $p$ is the number of different series being measured.  
+$$ \boldsymbol{x}_t = A^T \boldsymbol{z}_t  $$
+where $A \in \mathbb{R}^{p \times n}$ is a matrix consisting of eigenvectors $\boldsymbol{\alpha_i}$, each corresponding to an eigenvalue $l_i$ in decreasing order. 
+
+$$ \boldsymbol{z} \in \mathbb{R}^p $$ where  $ p $ is the number of different series being measured.  
 
 By partitioning the decomposition into the principal $m$ and minor $p-m$ components, we obtain a factor analysis and error accordingly:
-$$\mathbf{x}_t = (A_m|A^*_{p-m} )^T  \left( \frac{\mathbf{z}_{m,t}} {\mathbf{z}^*_{p-m,t}} \right) $$
+$$ \mathbf{x}_t = (A_m|A^*_{p-m} )^T  \left( \frac{\mathbf{z}_{m,t}} {\mathbf{z}^*_{p-m,t}} \right) $$
 $$ = A_m^T \mathbf{z}_{m,t} + (A^*_{p-m})^T \mathbf{z}^*_{p-m,t} $$
-$$= \Lambda \mathbf{f}_t + \boldsymbol{\epsilon}_t $$
+$$ = \Lambda \boldsymbol{f}_t + \boldsymbol{\epsilon}_t $$
 
-Substituting in the sample covariance and normalising gives us our estimates (for a model with $\Psi = \sigma^2 I$ this maximises the log-likelihood function (PRML p.548) *(are we assuming this?)*)
+Substituting in the sample covariance and normalising gives us our estimates (for a model with $\Psi = \sigma^2 I$ this maximises the log-likelihood function (PRML p.548); here we do not assume this)
 
 $$  \hat{\Lambda} = \sqrt{p}A^T_m , \hat{\Phi} ={p}A^{*T}_{p-m}A^{*}_{p-m} $$
 
@@ -76,7 +81,7 @@ We might plot the Scree plot (with `screeplot`) and identify a drop-off in the v
 
 We opt for the **direct forecast** procedure, where data at $t+h$ is projected onto factors $\mathbf{f}_t$.
 
-Forecasting can be conducted for a single series $y_t$, or for the whole vector of series $\mathbf{x}_t$.
+Forecasting can be conducted for a single series $y_t$, which is dependent on the factors, or for the whole vector of series $\mathbf{x}_t$.
 
 
 
@@ -85,7 +90,7 @@ Forecasting can be conducted for a single series $y_t$, or for the whole vector 
 ### References
 Pattern Recognition and Machine Learning, Christopher Bishop
 
-[Dynamic Factor Models]{http://www.barigozzi.eu/MB_DF_lecture_notes.pdf} Matteo Barigozzi
+[Dynamic Factor Models](http://www.barigozzi.eu/MB_DF_lecture_notes.pdf) Matteo Barigozzi
 
 [Forecasting Using Principal Components
-From a Large Number of Predictors ]{https://www.princeton.edu/~mwatson/papers/Stock_Watson_JASA_2002.pdf} Stock, Watson
+From a Large Number of Predictors ](https://www.princeton.edu/~mwatson/papers/Stock_Watson_JASA_2002.pdf) Stock, Watson
