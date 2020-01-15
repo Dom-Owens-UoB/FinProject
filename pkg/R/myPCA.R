@@ -57,3 +57,5 @@ setMethod("project", "myPCA_object", function(X,Y) X@projection %*% Y ) #project
 #log_close <- log(close_data_2018) #take log
 #diff_log <- diff(ts(log_close)) #diff series
 #callPCA <- myPCA(diff_log, 10)
+
+#project(callPCA, t(diff_log[,200:250] ))
