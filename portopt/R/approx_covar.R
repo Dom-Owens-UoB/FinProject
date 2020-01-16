@@ -18,5 +18,5 @@ approx.covar <- function(returns,model){
   error.covar <- error %*% t(error) * 1/n
   error.covar <- diag(diag(error.covar))
   covar <- t(loadings) %*% f.covar %*% loadings + error.covar
-  return(list(covar = covar, error.covar = error.covar, f.covar = f.covar))
+  return(list(covar = covar, error.covar = error.covar, f.covar = f.covar,error=error))
 }
