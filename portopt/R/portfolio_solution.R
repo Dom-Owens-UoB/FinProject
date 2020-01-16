@@ -25,4 +25,5 @@ portfolio.solution <- function(returns,model,covars,sigma0){
     portfolio <- as.numeric(1/C) * covar.inv %*% rep(1,p) +
       as.numeric(D)*(covar.inv%*%mean - as.numeric(B/C)*covar.inv%*%rep(1,p))
   }
+  return(portfolio)
 }

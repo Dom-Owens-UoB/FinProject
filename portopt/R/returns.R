@@ -11,5 +11,5 @@ returns <- function(data,lag,log = TRUE){
   data <- data[,-1] #Remove date column.
   if (log) data <- log(data)
   returns <- data %>% as.matrix %>% diff(lag = lag) %>% t()
-  return(-returns)
+  return(returns)
 }

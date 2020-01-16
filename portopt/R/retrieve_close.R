@@ -22,5 +22,8 @@ retrieve.close <- function(data,from,to,missing = TRUE){
     to.remove <- colnames(subset)[colSums(is.na(subset)) > 0]
     subset %<>% dplyr::select(-to.remove) #Remove columns.
   }
-  return(subset[,-1]) #Remove first column otherwise output incorrect.
+  subset <- subset[,-1] #Remove first column otherwise output incorrect.
+  subset$date <- as.Date(subset$date)
+  subset <- dplyr::arrange(subset,date)
+  return(subset)
 }
