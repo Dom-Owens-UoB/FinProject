@@ -2,6 +2,19 @@
 
 require(methods)
 
+#' Title
+#'
+#' @slot data matrix.
+#' @slot dimension integer.
+#' @slot centre numeric.
+#' @slot loadings matrix.
+#' @slot projection matrix.
+#' @slot projected matrix.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 setClass("myPCA_object",
          slots = c(
            data  = "matrix",
@@ -14,6 +27,15 @@ setClass("myPCA_object",
 )
 
 #constructor
+#' Title
+#'
+#' @param X
+#' @param q
+#'
+#' @return
+#' @export
+#'
+#' @examples
 myPCA <- function(X, q) {
   pca <- new("myPCA_object",
              data  = X,
@@ -22,25 +44,33 @@ myPCA <- function(X, q) {
   return(pca)
 }
 
+#' Title
+#'
+#' @param myPCA_object
+#'
+#' @return
+#' @export
+#'
+#' @examples
 setMethod("initialize", "myPCA_object",
           function(.Object, data, dimension){
   X <- data
   .Object@data <-  as.matrix(X)
   q <- as.integer(dimension)
   .Object@dimension <- q
-    
-            
+
+
   means <- colMeans(X) #get column means
   cX <- X - means #centre X
   .Object@centre <- means
-  
+
   #cX <- matrix(cX)
   covX <- cov(cX) #sample covariance
   EV <- eigen(covX, symmetric = TRUE) #obtain eigendecomposition with eigen
   A <- EV$vectors #full projection matrix
-  .Object@loadings <- A 
+  .Object@loadings <- A
   Aq <- A[,1:q] #q-reduced projection matrix
-  .Object@projection <- t(Aq) 
+  .Object@projection <- t(Aq)
   Z <- t(Aq)%*%t(X) #project X onto Aq
   .Object@projected <- Z
   return(.Object)
@@ -48,11 +78,19 @@ setMethod("initialize", "myPCA_object",
 )
 
 
+#' Title
+#'
+#' @param myPCA_object
+#'
+#' @return
+#' @export
+#'
+#' @examples
 setMethod("project", "myPCA_object", function(X,Y) X@projection %*% Y ) #projection method
 
 
 #oil_close_data <- read.csv("oil_close_2018.csv")
-#close_data_2018 <- subset(oil_close_data, select = -c(X.1, DATE, DCOILWTICO, ADT)) 
+#close_data_2018 <- subset(oil_close_data, select = -c(X.1, DATE, DCOILWTICO, ADT))
 
 #log_close <- log(close_data_2018) #take log
 #diff_log <- diff(ts(log_close)) #diff series
