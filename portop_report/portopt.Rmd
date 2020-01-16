@@ -1,0 +1,38 @@
+---
+title: 'S&P 500: Portfolio Optimisation via Factor Analysis'
+output: pdf_document
+bibliography: bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction: Modern Portfolio Theory
+
+Modern Portfolio Theory (firt proposed by economist **Harry Markowitz**) draws on the logical idea that, given the choice between two portfolios with the same expected return, you would prefer the portfolio with the smallest variance (or alternatively, the highest average return for a given level or risk). In this context, the variance of a portfolio is a direct metric for the portfolio's "risk".
+
+**Definition:** A *Portfolio* of financial assets is defined as a set of weights $\boldsymbol{w} = (w_1,\ldots,w_p)$ such that $\boldsymbol{w}^T \boldsymbol{1}_p \leq 1$, where $\boldsymbol{1}_p$ is the $p$-length vector of 1's. This definition allows for *short-selling* (where an investor hold a negative quantity of a financial asset). In some cases the additional constraint that $w_i \geq 0 \text{, } \forall i = 1 \ldots p$ which prevents short selling. 
+
+The idea of MPT boils down to a constrianed optimisation problem, taking the form
+$$ \max_{\boldsymbol{w}} \boldsymbol{w^T \mu }$$
+$$\text{s.t. } \boldsymbol{w^T\Sigma w} \leq \sigma_0^2 \text{,} \quad \boldsymbol{w}^T \boldsymbol{1}_p \leq 1 $$
+Where $\boldsymbol{\mu},\boldsymbol{\Sigma}$ are the mean and covariance of the returns respectively. That is we look for a portfolio that delivers the maximum expected return such that the variance of the portfolio does not exceed $\sigma_0^2$. The choice of $\sigma_0^2$ quantifies an investors aversion to risk. 
+
+In this form (i.e. no constraints on short-selling) there is a well known analytical solution to this optimization problem *see Proposition 2.1* [@Bai]:
+
+$$
+\text{If }\sigma_0 B \leq \sqrt{A} \text{, then } R = \sigma_0 \sqrt{A} \text{ and } \boldsymbol{w} = \frac{ \sigma_0 }{\sqrt{A}}\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu}
+$$
+$$ 
+\text{If } \sigma_0 B > \sqrt{A} \text{, then } R = \frac{B}{C} + D(A-\frac{B^2}{C}) \text{ and } \boldsymbol{w} = \frac{1}{C} \boldsymbol{\Sigma}^{-1} \boldsymbol{1}_p + D(\boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} - \frac{B}{C}\boldsymbol{\Sigma}^{-1} \boldsymbol{1}_p)
+$$
+Where $R$ denotes the expected return of the portfolio, $A = \boldsymbol{\mu}^T \boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} \text{, } B =  \boldsymbol{1}_p^T \boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} \text{, }  C = \boldsymbol{1}_p^T\boldsymbol{\Sigma}^{-1}\boldsymbol{1}_p \text{ and } D = \sqrt{\frac{C\sigma_0^2 - 1}{AC - B^2}}$.
+
+## Factor Analysis for Portfolio Optimisation
+
+
+
+
+
+# References
