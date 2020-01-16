@@ -53,8 +53,10 @@ Fit_GP <- function(x,y,sig,sigma_n,l,xstar){
   fhatstar <- t(kstar)%*%alpha    # Predictive mean
 
 
-  v <- solve(L,kstar)
-  Varhatstar <- outer(xstar, xstar, Vectorize(function(x,y)  squared_exp_kernel(x,y,sig,l))) - t(v)%*%v
+  v <- solve(t(L),kstar)
+
+  Varhatstar <- Kernel(xstar,xstar,sig,l) - t(v)%*%v
+
   logmarglikelihood <-  -0.5*t(y)%*%alpha - sum(diag(L)) - (length(x)/2)*log(2*pi)  #log likelihood
   val <- list(mean = fhatstar, variance = Varhatstar, loglikelihood = logmarglikelihood)
   return(val)
