@@ -35,7 +35,7 @@ setMethod("initialize", "myPCA_object",
   .Object@centre <- means
   
   #cX <- matrix(cX)
-  covX <- stats::cov(cX) #sample covariance
+  covX <- cov(cX) #sample covariance
   EV <- eigen(covX, symmetric = TRUE) #obtain eigendecomposition with eigen
   A <- EV$vectors #full projection matrix
   .Object@loadings <- A 
