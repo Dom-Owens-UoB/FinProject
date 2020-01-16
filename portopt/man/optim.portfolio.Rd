@@ -4,7 +4,7 @@
 \alias{optim.portfolio}
 \title{Optimise portolio weights via quadratic programming.}
 \usage{
-optim.portfolio(returns, covar)
+optim.portfolio(returns, covar, lambda)
 }
 \arguments{
 \item{returns}{A matrix of stock returns}

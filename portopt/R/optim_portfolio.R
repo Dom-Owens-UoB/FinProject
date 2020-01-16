@@ -5,14 +5,14 @@
 #'
 #' @export
 #'
-optim.portfolio <- function(returns,covar){
+optim.portfolio <- function(returns,covar,lambda){
   mean <- rowMeans(returns)
   p <- nrow(returns)
   constraints <- cbind(
     matrix(rep(1,p), nr=p ),
     diag(p)
   )
-  portfolio <- quadprog::solve.QP(2*covar,mean,constraints
+  portfolio <- quadprog::solve.QP(lambda*covar,mean,constraints
                         ,c(1,rep(0,p)),meq = 1)
   return(portfolio)
 }
