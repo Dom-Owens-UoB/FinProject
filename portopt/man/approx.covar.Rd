@@ -13,7 +13,7 @@ approx.covar(returns, model)
 the function `fit.factor.model()`.}
 }
 \value{
-The approximated covariance matrix.
+The approximated covariance matrix, covariance of errors and factors.
 }
 \description{
 Approximate the covariance matrix via factor analysis.
