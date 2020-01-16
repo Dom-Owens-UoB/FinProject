@@ -4,7 +4,7 @@
 \alias{portfolio.solution}
 \title{Analytical solution to Mean-Variance Portfolio.}
 \usage{
-portfolio.solution(returns, model, covars, sigma0)
+portfolio.solution(returns, model, covars, var)
 }
 \arguments{
 \item{returns}{A matrix of stock prices}
@@ -13,7 +13,7 @@ portfolio.solution(returns, model, covars, sigma0)
 
 \item{covars}{output from the function `approx.covar()`}
 
-\item{sigma0}{upper bound of variance.}
+\item{var}{upper bound of variance.}
 }
 \description{
 Analytical solution to Mean-Variance Portfolio.
