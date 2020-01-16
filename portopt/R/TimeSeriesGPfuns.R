@@ -29,8 +29,6 @@ Kernel <- function(x,y,sig,l){
 }
 
 
-
-AirPassengers
 #' Fit Gaussian Process with squared exp kernel
 #'
 #' @param x Input time indicies
