@@ -51,8 +51,10 @@ setMethod("initialize", "myPCA_object",
 )
 
 #define generic "project" method
-setGeneric("project")
-setMethod("project", "myPCA_object", function(X,Y) X@projection %*% Y ) #projection method
+
+#setGeneric("project")
+
+#setMethod("project", "myPCA_object", function(X,Y) X@projection %*% Y ) #projection method
 
 
 #oil_close_data <- read.csv("oil_close_2018.csv")
