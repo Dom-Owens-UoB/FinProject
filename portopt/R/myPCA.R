@@ -2,19 +2,7 @@
 
 require(methods)
 
-#' Title
-#'
-#' @slot data matrix of data.
-#' @slot dimension integer of target dimension to reduce to.
-#' @slot centre numeric .
-#' @slot loadings matrix.
-#' @slot projection matrix.
-#' @slot projected matrix.
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 setClass("myPCA_object",
          slots = c(
            data  = "matrix",
@@ -27,15 +15,7 @@ setClass("myPCA_object",
 )
 
 #constructor
-#' myPCA_object constructor
-#'
-#' @param X
-#' @param q
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 myPCA <- function(X, q) {
   pca <- new("myPCA_object",
              data  = X,
@@ -44,14 +24,7 @@ myPCA <- function(X, q) {
   return(pca)
 }
 
-#' Initialize method for myPCA_object
-#'
-#' @param myPCA_object
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 setMethod("initialize", "myPCA_object",
           function(.Object, data, dimension){
   X <- data
@@ -79,14 +52,6 @@ setMethod("initialize", "myPCA_object",
 
 #define generic "project" method
 setGeneric("project")
-#' Project
-#' method projecting Y onto projection matrix of myPCA_object 
-#' @param myPCA_object
-#'
-#' @return
-#' @export
-#'
-#' @examples project(myPCA, Y)
 setMethod("project", "myPCA_object", function(X,Y) X@projection %*% Y ) #projection method
 
 
