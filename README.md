@@ -27,9 +27,9 @@ impact on the frequency of adjustment to the portfolio.
 
 - [**Modelling Oil Prices**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject_Data_Analysis.pdf)
 
-- [**Portfolio Selection**]()
+- [**Portfolio Selection**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portop_report/portopt.pdf)
 
-- [**Gaussian Process Regression**]()
+- [**Gaussian Process Regression**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/GaussianProcessForTS.pdf)
 
 
 ## Plan
