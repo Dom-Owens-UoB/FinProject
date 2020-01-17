@@ -8,7 +8,6 @@
 #' @return
 #' @export
 #'
-#' @examples
 squared_exp_kernel <- function(x,y,sig,l){
   return(sig^2 * exp(-1/2/l^2 * (x-y)^2))
 }
@@ -23,7 +22,6 @@ squared_exp_kernel <- function(x,y,sig,l){
 #' @return
 #' @export
 #'
-#' @examples
 Kernel <- function(x,y,sig,l){
   outer(x, y, Vectorize(function(x,y)  squared_exp_kernel(x,y,sig,l)))
 }
@@ -41,7 +39,6 @@ Kernel <- function(x,y,sig,l){
 #' @return
 #' @export
 #'
-#' @examples
 Fit_GP <- function(x,y,sig,sigma_n,l,xstar){
   K <- Kernel(x,x, sig,l) # produce kernel matrix
   L <- chol(K + sigma_n^2*diag(length(x)))
