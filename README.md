@@ -21,7 +21,14 @@ impact on the frequency of adjustment to the portfolio.
 
 
 ## Layout
-- [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/portopt): access with `install_github("Dom-Owens-UoB/FinProject", subdir="portopt")`. Features [Principal Components Analysis in S4](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/myPCA.R); [Support Vector Machine for Classification](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/SupportVectorMachine.R);
+- [**Package**](https://github.com/Dom-Owens-UoB/FinProject/tree/master/portopt): access with `install_github("Dom-Owens-UoB/FinProject", subdir="portopt")`. 
+Features [Principal Components Analysis in S4](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/myPCA.R); 
+[Support Vector Machine for Classification](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/SupportVectorMachine.R);
+[Gaussian Process Fitting](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/TimeSeriesGPfuns.R);
+[Fitting a Factor Model](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/new_model_fit.R);
+[Portfolio Optimisation via Analytical Solution (with short selling)](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/portfolio_solution.R);
+[Comparing Portfolio Performance](https://github.com/Dom-Owens-UoB/FinProject/blob/master/portopt/R/comp_unif_port.R);
+
 
 - [**Notes on Factor Analysis**](https://github.com/Dom-Owens-UoB/FinProject/blob/master/Documents/FinProject.pdf)
 
