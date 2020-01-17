@@ -41,13 +41,13 @@ inv_covar <- a - a%*%t(loadings) %*% solve(b + loadings%*%a%*%t(loadings),loadin
 
 #Portfolio Optimisation
 #following (w.r.t notation) the analytical solution for portfolio optimisation...
-sigma0 <- 0.001
+sigma0 <- 1
 A <- t(y_mean) %*% inv_covar %*% y_mean
 B <- t(rep(1,414)) %*% inv_covar %*% y_mean
 C <- t(rep(1,414)) %*% inv_covar %*% rep(1,414)
-b <- (C*sigma0^2 - 1)/(A*C - B^2) %>% sqrt()
-if (sigma0 * B <= sqrt(A)){
-  portfolio <- as.numeric(sigma0/(sqrt(A))) * inv_covar %*% y_mean 
+b <- (C*sigma0 - 1)/(A*C - B^2) %>% sqrt()
+if (sqrt(sigma0) * B <= sqrt(A)){
+  portfolio <- as.numeric(sqrt(sigma0)/(sqrt(A))) * inv_covar %*% y_mean 
 } else{
   portfolio <- as.numeric(1/C) * inv_covar %*% rep(1,414) + 
     as.numeric(b)*(inv_covar%*%y_mean - as.numeric(B/C)*inv_covar%*%rep(1,414))
