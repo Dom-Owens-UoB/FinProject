@@ -31,8 +31,75 @@ Where $R$ denotes the expected return of the portfolio, $A = \boldsymbol{\mu}^T 
 
 ## Factor Analysis for Portfolio Optimisation
 
+Following a similar approach to that described by [@Chen], we use a *factor model* to model our data the S&P 500 stock prices. We have access to daily closing-bid prices from 2014 to 2019. 
+
+```{r, cache=TRUE,include=FALSE}
+data <- read.csv("combined_close_data.csv")
+```
+```{r echo = F}
+library(portopt)
+display <- retrieve.close(data,"2014-01-01","2019-01-01")
+head(data[,1:10])
+```
+
+The data is modelled as
+$$ y_{it} = \mu_i  + \boldsymbol{\lambda}_i^T \boldsymbol{f}_{t} + u_{it} \Leftrightarrow \boldsymbol{Y}
+ = \boldsymbol{\mu} \boldsymbol{1_n}^T + \boldsymbol{\Lambda}^T\boldsymbol{F} + \boldsymbol{U} $$
+With $\boldsymbol{Y} = (\boldsymbol{y}_1,\ldots,\boldsymbol{y}_n) \text{, } \boldsymbol{F} = (\boldsymbol{f}_1,\ldots,\boldsymbol{f}_n)\text{, }\boldsymbol{U} = (\boldsymbol{u}_1,\ldots,\boldsymbol{u}_n) \text{, } \boldsymbol{\Lambda} = (\boldsymbol{\lambda}_1, \ldots, \boldsymbol{\lambda}_p)$. Taking the 2-day log-returns from 2016-01-01 to 2017-01-01 as a training set, we can now fit our model.
+
+```{r include = F}
+train <- retrieve.close(data,"2016-01-01","2017-01-01")
+train.returns <- returns(train,2)
+model <- fit.factor.model.new(train.returns,10,100)
+predictions <- t(model@loadings) %*% model@scores
+centered <- train.returns - rowMeans(train.returns) %*% t(rep(1,ncol(train.returns)))
+```
+```{r echo = F}
+plot(1:ncol(predictions),predictions[1,], type= "l",main="Stock Price Comparison: ABT", xlab="t",ylab = "log-return")
+lines(1:ncol(train.returns), centered[1,], type = "l",col = "red")
+legend("bottomright",legend = c("ABT","Model"),lty=c(1,1),col=c("black","red"))
+```
+After fitting a model with 10 factors, we can see from this plot that the model roughly fits the first timeseries corresponding to ABT. Of course, it is important to remember that to properly assess the performance of the model we would need to compute the **testing error**. Unfortunately, since our model contains latent variables that must be estimated, we cannot evaluate our model at a point in the test set. 
+
+As a replacement metric for performance, we will construct a covariance matrix from the model and use MPT to find a portfolio. We will compare this to the simplistic strategy of dividing all capital equally amongst the assets.
+
+Here will will make use of a **quadratic programming** algorithm found in the `quadprog` package. This makes use of the dual method proposed by [@quad] and solves the problem:
+
+$$\min_{\boldsymbol{w}} \frac{1}{2} \boldsymbol{w}^T \boldsymbol{\Sigma} \boldsymbol{w} - \boldsymbol{\mu}^T\boldsymbol{w}$$
+
+$$\text{S.t. } \boldsymbol{A}^T \boldsymbol{w} \geq \boldsymbol{b}_0 $$
+
+Instead of treating the variance as a constraint, this approach aims to minimize/maximize the variance/expected return of the portfolio directly. In the following implementation we allow the variance term to be multiplied by a positive constant $\lambda = 10$. A higher value of $\lambda$ will result in a solution with a smaller variance.
+
+```{r echo=F}
+covars <- approx.covar(train.returns,model)
+portfolio <- optim.portfolio(train.returns,covars$covar,lambda=10)$solution
+```
+**Train: 2016-01-01 to 2017-01-01**
+**Test: 2017-01-01 to 2018-01-01**
+
+```{r echo = F}
+test <- retrieve.close(data,"2017-01-01","2018-01-01")
+test <- dplyr::select(test,rownames(train.returns))
+comp.unif.port(test,portfolio) # Compare portfolio to uniform portfolio
+```
 
 
+**Train: 2014-01-01 to 2015-01-01**
+**Test: 2015-01-01 to 2016-01-01**
+```{r include = F}
+train <- retrieve.close(data,"2014-01-01","2015-01-01")
+test <- retrieve.close(data,"2015-01-01","2016-01-01")
+train.returns <- returns(train,2)
+model <- fit.factor.model.new(train.returns,10,100)
+covars <- approx.covar(train.returns,model)
+portfolio <- optim.portfolio(train.returns,covars$covar,10)$solution
+test <- dplyr::select(test,rownames(train.returns))
+```
+```{r echo = F}
+comp.unif.port(test,portfolio)
+```
 
+**Conclusion:** Over seperate time periods the portfolios constructed via factor analysis seem to out-perform the uniformly distributed portfolio. This suggests there is a chance that our model contains some predictive power. **However**, without a proper metric such as the testing error, **we do not have sufficient evidence** to claim our model is successful at representing the stock market data. 
 
 # References

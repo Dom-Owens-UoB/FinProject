@@ -8,7 +8,7 @@ Description: Contains functions used for modelling and portfolio selection, and 
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: magrittr,dplyr,methods,stats,quadprog
+Imports: magrittr,dplyr,methods,stats,quadprog,chemometrics
 RoxygenNote: 7.0.2
 Suggests: 
     testthat (>= 2.1.0)
