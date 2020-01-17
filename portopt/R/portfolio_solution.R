@@ -6,7 +6,7 @@
 #' @param var upper bound of variance.
 #' @export
 #'
-portfolio.solution <- function(returns,model,covars,var){
+portfolio.solve <- function(returns,model,covars,var){
   mean <- rowMeans(returns)
   a <- solve(covars$error.covar)
   b <- solve(covars$f.covar)
@@ -22,7 +22,7 @@ portfolio.solution <- function(returns,model,covars,var){
   ones <- rep(1,p)
 
   if (sigma0 * B / A <= 1){
-    portfolio <- (sigma0/A) * covar.inv %*% mean
+    portfolio <- (sigma0/sqrt(A)) * covar.inv %*% mean
   }
   else{
     portfolio <- (1/C) * (covar.inv%*%ones) + D * (covar.inv%*%mean - (B/C) * covar.inv%*%ones)

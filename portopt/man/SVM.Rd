@@ -26,5 +26,5 @@ numeric vector of coefficient parameter estimates for y
 Support Vector Machine classifier
 }
 \examples{
-SVM(X = X, y = y, max_it = 1e4, eta_0 = 10, alpha = 0.9, c = 0.9)
+ SVM(X = matrix(1:100, 10, 10), y = 1:10, max_it = 1e4, eta_0 = 10, alpha = 0.9, c = 0.9)
 }
